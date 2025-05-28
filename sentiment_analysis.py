@@ -11,12 +11,12 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix
 import nltk
 from nltk.corpus import stopwords
+from nltk.tokenize import RegexpTokenizer
 import re
 from nltk.stem import WordNetLemmatizer
 
 nltk.download('stopwords')
 nltk.download('wordnet')
-nltk.download('punkt')
 
 os.makedirs('plots', exist_ok=True)
 path=os.path.join("dataset","mini_imdb_reviews.csv")
@@ -25,12 +25,13 @@ df=pd.read_csv(path)
 print("Sample data:\n",df.head())
 
 def preprocess_text(text):
-
-    text = text.lower() 
+    text = text.lower()
     text = re.sub(r'[^a-z\s]', '', text)
-    tokens=nltk.word_tokenize(text)
-    
-    lemmatizer= WordNetLemmatizer()
+
+    tokenizer = RegexpTokenizer(r'\b[a-zA-Z]{2,}\b')
+    tokens = tokenizer.tokenize(text)
+
+    lemmatizer = WordNetLemmatizer()
     stop_words = set(stopwords.words('english'))
     cleaned_tokens = [lemmatizer.lemmatize(word) for word in tokens if word not in stop_words]
 
